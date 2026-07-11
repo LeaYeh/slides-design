@@ -156,29 +156,44 @@ def lane_label(slide, center_y, text):
     r.font._rPr.set("spc", str(int(t.KICKER_TRACK_PT * 100)))
     return tb
 
-def _seg(slide, x1, y1, x2, y2, color, *, arrow=False, width=1.25):
+_LINE = t.rgb("B4B7BD")  # refined connector gray
+
+def _seg(slide, x1, y1, x2, y2, color, *, arrow=False, width=1.0, head="sm"):
     cn = slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,
                                     Inches(x1), Inches(y1), Inches(x2), Inches(y2))
     cn.line.color.rgb = color; cn.line.width = Pt(width)
     if arrow:
         from pptx.oxml.ns import qn
         ln = cn.line._get_or_add_ln()
-        ln.append(ln.makeelement(qn("a:tailEnd"), {"type": "triangle", "w": "med", "len": "med"}))
+        ln.append(ln.makeelement(qn("a:tailEnd"), {"type": "triangle", "w": head, "len": head}))
     return cn
 
-def feedback_arc(slide, x1, x2, y_box_top, label, *, rise=0.45):
+def _chip(slide, cx, cy, text):
+    """A small caption on a white background so lines don't cross it."""
+    w = len(text) * 0.075 + 0.18
+    r = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(cx - w / 2), Inches(cy - 0.13),
+                               Inches(w), Inches(0.26))
+    _fill(r, t.WHITE); _no_line(r)
+    _small_caps(slide, (cx - w / 2, cy - 0.13, w, 0.26), text, t.SLATE,
+                align=PP_ALIGN.CENTER, size=9)
+
+def elbow(slide, pts, *, label=None, color=None):
+    """Orthogonal connector through pts (right-angle bends), arrowhead on the last
+    segment. pts = [(x,y), ...] in inches. Optional label chip on the first segment."""
+    color = color or _LINE
+    for i in range(len(pts) - 1):
+        (x1, y1), (x2, y2) = pts[i], pts[i + 1]
+        _seg(slide, x1, y1, x2, y2, color, arrow=(i == len(pts) - 2))
+    if label:
+        (x1, y1), (x2, y2) = pts[0], pts[1]
+        _chip(slide, (x1 + x2) / 2, (y1 + y2) / 2, label)
+
+def feedback_arc(slide, x1, x2, y_box_top, label, *, rise=0.4):
     """Loop-back indicator above a row: up from x1, across, down to x2 (arrowhead)."""
     y_arc = y_box_top - rise
-    _seg(slide, x1, y_box_top, x1, y_arc, t.SILVER)
-    _seg(slide, x1, y_arc, x2, y_arc, t.SILVER)
-    _seg(slide, x2, y_arc, x2, y_box_top, t.SILVER, arrow=True)
+    _seg(slide, x1, y_box_top, x1, y_arc, _LINE)
+    _seg(slide, x1, y_arc, x2, y_arc, _LINE)
+    _seg(slide, x2, y_arc, x2, y_box_top, _LINE, arrow=True)
     lo, hi = sorted((x1, x2))
-    _small_caps(slide, (lo, y_arc - 0.34, hi - lo, 0.3), label, t.SLATE,
+    _small_caps(slide, (lo, y_arc - 0.32, hi - lo, 0.3), label, t.SLATE,
                 align=PP_ALIGN.CENTER, size=10)
-
-def connector_labeled(slide, x1, y1, x2, y2, label):
-    """Labeled cross-lane connector: silver arrow + a small caption at its midpoint."""
-    arrow(slide, x1, y1, x2, y2)
-    mx, my = (x1 + x2) / 2, (y1 + y2) / 2
-    _small_caps(slide, (mx - 1.0, my - 0.30, 2.0, 0.3), label, t.SLATE,
-                align=PP_ALIGN.CENTER, size=9)

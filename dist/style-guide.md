@@ -57,7 +57,10 @@ tracked · Body 18/400 Graphite · Caption 13/400 Slate.
   straddling it, a titled container per lane, a horizontal flow with a feedback arc,
   specialized shapes (cylinder/document/diamond), and labeled cross-lane connectors.
   Warm accent for one lane, cool/neutral for the other. **Layout is the message — align
-  boxes on a grid, keep one focus per lane, let it breathe.**
+  boxes on a grid, keep one focus per lane, let it breathe.** Two forms:
+  `arch_swimlane` (native shapes — editable in PowerPoint) and `arch_swimlane_svg`
+  (publication-grade SVG in the same palette, embedded as a crisp image — regenerate
+  to edit; needs the `[svg]` extra). Use SVG for the hero/handout, native for quick edits.
 - Many nodes, specialized type (sequence / ER / state / UML), or "publication-grade"
   → **Route B**: generate SVG in this palette (see `src/slidestyle/svg/`) and embed.
 

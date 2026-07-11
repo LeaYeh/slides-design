@@ -188,37 +188,56 @@ def arch_swimlane(slide, accent="blue"):
     shapes.lane_label(slide, 5.6, "Staging / Prod")
 
     # --- Dev lane: 3-stage flow + feedback arc + artifact ---
-    dev_y, bw, bh = 2.45, 2.05, 1.0
+    dev_y, bw, bh = 2.5, 2.05, 0.8
     d1, d2, d3 = 2.35, 5.05, 7.75
     shapes.box(slide, (d1, dev_y, bw, bh), "Data Prep", kind="focus", accent=DEV)
     shapes.box(slide, (d2, dev_y, bw, bh), "Model Training", kind="focus", accent=DEV)
     shapes.box(slide, (d3, dev_y, bw, bh), "Model Validation", kind="focus", accent=DEV)
     cy = dev_y + bh / 2
-    shapes.arrow(slide, d1 + bw, cy, d2, cy)
-    shapes.arrow(slide, d2 + bw, cy, d3, cy)
+    shapes._seg(slide, d1 + bw, cy, d2, cy, shapes._LINE, arrow=True)
+    shapes._seg(slide, d2 + bw, cy, d3, cy, shapes._LINE, arrow=True)
     shapes.feedback_arc(slide, d3 + bw / 2, d2 + bw / 2, dev_y, "Hyperparameter tuning")
-    shapes.document(slide, (10.15, dev_y, 1.25, bh), "Trained\nmodel", accent=DEV)
-    shapes.arrow(slide, d3 + bw, cy, 10.15, cy)
+    shapes.document(slide, (10.2, dev_y, 1.2, bh), "Trained\nmodel", accent=DEV)
+    shapes._seg(slide, d3 + bw, cy, 10.2, cy, shapes._LINE, arrow=True)
 
     # --- Prod lane: 3-stage flow + decision + retrain loop ---
-    prod_y = 5.15
+    prod_y = 5.2
     p1, p2, p3 = 2.35, 5.05, 7.75
     shapes.box(slide, (p1, prod_y, bw, bh), "Data Prep", kind="plain")
     shapes.box(slide, (p2, prod_y, bw, bh), "Retrain", kind="plain")
     shapes.box(slide, (p3, prod_y, bw, bh), "Validate", kind="plain")
     pcy = prod_y + bh / 2
-    shapes.arrow(slide, p1 + bw, pcy, p2, pcy)
-    shapes.arrow(slide, p2 + bw, pcy, p3, pcy)
-    shapes.diamond(slide, (10.05, prod_y - 0.15, 1.4, 1.3), "Perf\ndrop?", accent=PROD)
-    shapes.arrow(slide, p3 + bw, pcy, 10.05, pcy)
+    shapes._seg(slide, p1 + bw, pcy, p2, pcy, shapes._LINE, arrow=True)
+    shapes._seg(slide, p2 + bw, pcy, p3, pcy, shapes._LINE, arrow=True)
+    shapes.diamond(slide, (10.0, pcy - 0.6, 1.2, 1.2), "Perf\ndrop?", accent=PROD)
+    shapes._seg(slide, p3 + bw, pcy, 10.0, pcy, shapes._LINE, arrow=True)
     # retrain loop: down from diamond, left across, up into Data Prep (YES)
-    yb = 6.55
-    shapes._seg(slide, 10.75, prod_y + bh, 10.75, yb, t.SILVER)
-    shapes._seg(slide, 10.75, yb, p1 + bw / 2, yb, t.SILVER)
-    shapes._seg(slide, p1 + bw / 2, yb, p1 + bw / 2, prod_y + bh, t.SILVER, arrow=True)
-    shapes._small_caps(slide, (9.7, yb - 0.02, 1.1, 0.3), "Yes", t.ramp(PROD, "c800"), size=9)
+    dcx = 10.6
+    shapes.elbow(slide, [(dcx, pcy + 0.6), (dcx, 6.55), (p1 + bw / 2, 6.55),
+                         (p1 + bw / 2, prod_y + bh)])
+    shapes._small_caps(slide, (dcx + 0.12, pcy + 0.62, 0.7, 0.3), "Yes",
+                       t.ramp(PROD, "c800"), size=9)
 
-    # --- labeled cross-lane connectors ---
-    shapes.connector_labeled(slide, 1.72, 3.7, d1, cy + 0.15, "POC data")
-    shapes.connector_labeled(slide, 1.72, 4.65, p1, pcy - 0.15, "Batch fetch")
-    shapes.connector_labeled(slide, 10.75, dev_y + bh, 10.75, 4.42, "Deploy")
+    # --- orthogonal cross-lane connectors with white-chip labels ---
+    shapes.elbow(slide, [(1.72, 3.6), (2.05, 3.6), (2.05, cy), (d1, cy)])
+    shapes._chip(slide, 2.05, 3.35, "POC data")
+    shapes.elbow(slide, [(1.72, 4.7), (2.05, 4.7), (2.05, pcy), (p1, pcy)])
+    shapes._chip(slide, 2.05, 5.05, "Batch fetch")   # below the lane title, clear
+    shapes.elbow(slide, [(10.8, dev_y + bh), (10.8, 4.42)])
+    shapes._chip(slide, 10.8, 3.9, "Deploy")
+
+
+def arch_swimlane_svg(slide, accent="blue"):
+    """Publication-grade form of the swim-lane diagram: generated as SVG in our palette
+    and embedded full-slide (renders as a crisp image; regenerate to edit). Falls back
+    to a note if the [svg] extra (cairosvg) isn't installed, so the core build never breaks."""
+    from .svg.generate import swimlane_svg
+    try:
+        from .svg.embed import embed_svg
+        embed_svg(slide, swimlane_svg().encode(), 0, 0, 13.333, 7.5)
+    except Exception:
+        text.kicker(slide, 0.9, 0.9, "Architecture", accent)
+        text.title(slide, 0.86, 1.35, 11, "Swim-lane — SVG", "heading")
+        text.body(slide, 0.9, 2.6, 10.5,
+                  "Publication-grade SVG version. Install the svg extra "
+                  "(uv pip install -e '.[svg]') and rebuild to embed it here.")
