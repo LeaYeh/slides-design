@@ -42,3 +42,49 @@ def heading_body(slide, accent="blue"):
     text.body(slide, 0.9, 2.6, 7.5,
               "Body copy in Graphite, generous line-height. One idea per slide; "
               "keep supporting detail tight and scannable.")
+
+def bullet_list(slide, accent="blue"):
+    text.kicker(slide, 0.9, 0.9, "Principles", accent)
+    text.title(slide, 0.86, 1.35, 11, "What guides the design", "heading")
+    items = ["Hierarchy over decoration", "One idea per slide",
+             "A single accent, used deliberately", "Whitespace is a feature"]
+    y = 2.7
+    for it in items:
+        m = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.95), Inches(y+0.09),
+                                   Inches(0.12), Inches(0.12))
+        m.fill.solid(); m.fill.fore_color.rgb = t.ramp(accent, "c600"); m.line.fill.background()
+        text.textbox(slide, (1.3, y, 10, 0.6), it, size=18, color=t.GRAPHITE)
+        y += 0.75
+
+def two_column(slide, accent="blue"):
+    text.kicker(slide, 0.9, 0.9, "Comparison", accent)
+    text.title(slide, 0.86, 1.35, 11, "Two columns", "heading")
+    text.textbox(slide, (0.9, 2.7, 5.4, 0.5), "Left", size=18, bold=True, color=t.INK)
+    text.body(slide, 0.9, 3.2, 5.4, "First column body content sits here.")
+    text.textbox(slide, (7.0, 2.7, 5.4, 0.5), "Right", size=18, bold=True, color=t.INK)
+    text.body(slide, 7.0, 3.2, 5.4, "Second column body content sits here.")
+
+def color_cards(slide, accent="blue"):
+    text.kicker(slide, 0.9, 0.9, "Metrics", accent)
+    text.title(slide, 0.86, 1.35, 11, "Impact at a glance", "heading")
+    data = [("3.2×", "faster to draft", accent), ("100%", "on-brand", None), ("12", "layouts", accent)]
+    x = 0.9
+    for number, label, acc in data:
+        shapes.kpi_tile(slide, (x, 2.9, 3.6, 1.7), number, label, accent=acc)
+        x += 3.9
+
+def highlight(slide, accent="blue"):
+    text.kicker(slide, 0.9, 0.9, "Key point", accent)
+    text.title(slide, 0.86, 1.35, 11, "Highlight a term", "heading")
+    # tint highlight block behind a key phrase
+    hl = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.9), Inches(3.0),
+                                Inches(5.2), Inches(1.0))
+    hl.adjustments[0] = 0.12
+    hl.fill.solid(); hl.fill.fore_color.rgb = t.ramp(accent, "c300"); hl.line.fill.background()
+    from pptx.enum.text import MSO_ANCHOR as _A
+    hl.text_frame.vertical_anchor = _A.MIDDLE
+    p = hl.text_frame.paragraphs[0]; p.alignment = PP_ALIGN.CENTER
+    r = p.add_run(); r.text = "the one number that matters"
+    r.font.name = "Helvetica Neue"; r.font.size = Pt(20); r.font.bold = True
+    r.font.color.rgb = t.ramp(accent, "c900")
+    text.body(slide, 0.9, 4.3, 10, "Supporting sentence explains why it matters.")
