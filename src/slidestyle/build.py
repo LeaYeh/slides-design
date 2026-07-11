@@ -18,6 +18,7 @@ GALLERY = [
     (layouts.arch_flow, "9a · Architecture — flow"),
     (layouts.arch_layered, "9b · Architecture — layered"),
     (layouts.arch_nested, "9c · Architecture — nested"),
+    (layouts.arch_swimlane, "9d · Architecture — swim-lane"),
     (layouts.image_caption, "10 · Image + caption"),
     (layouts.quote, "11 · Quote"),
     (layouts.closing, "12 · Closing"),

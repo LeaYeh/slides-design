@@ -56,6 +56,12 @@ tracked · Body 18/400 Graphite · Caption 13/400 Slate.
 - Simple flow / pipeline → **Route A, Pattern A** (horizontal flow, one focus node).
 - System layers → **Route A, Pattern B** (stacked bands, 3 accents as categories).
 - Grouping / boundaries → **Route A, Pattern C** (nested container).
+- Multiple environments / a lifecycle with a shared store, feedback loops & a decision
+  → **Route A, Pattern D** (swim-lane): rotated lane labels, a divider, a shared cylinder
+  straddling it, a titled container per lane, a horizontal flow with a feedback arc,
+  specialized shapes (cylinder/document/diamond), and labeled cross-lane connectors.
+  Warm accent for one lane, cool/neutral for the other. **Layout is the message — align
+  boxes on a grid, keep one focus per lane, let it breathe.**
 - Many nodes, specialized type (sequence / ER / state / UML), or "publication-grade"
   → **Route B**: generate SVG in this palette (see `src/slidestyle/svg/`) and embed.
 

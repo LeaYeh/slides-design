@@ -86,3 +86,99 @@ def kpi_tile(slide, pos, number, label, *, accent=None):
     p2 = tf.add_paragraph(); r2 = p2.add_run(); r2.text = label
     r2.font.name = "Helvetica Neue"; r2.font.size = Pt(12); r2.font.color.rgb = t.SLATE
     return sp
+
+# --- swim-lane / composition kit (for the layout-rich architecture example) ---
+
+def _centered(shape, text, *, size=13, bold=True, color=t.GRAPHITE):
+    tf = shape.text_frame; tf.word_wrap = True
+    tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+    p = tf.paragraphs[0]; p.alignment = PP_ALIGN.CENTER
+    r = p.add_run(); r.text = text
+    r.font.name = "Helvetica Neue"; r.font.size = Pt(size); r.font.bold = bold
+    r.font.color.rgb = color
+    return shape
+
+def _small_caps(slide, pos, text, color, *, align=PP_ALIGN.LEFT, size=11):
+    left, top, width, height = (Inches(v) for v in pos)
+    tb = slide.shapes.add_textbox(left, top, width, height)
+    tf = tb.text_frame; tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+    p = tf.paragraphs[0]; p.alignment = align
+    r = p.add_run(); r.text = text.upper()
+    r.font.name = "Helvetica Neue"; r.font.size = Pt(size); r.font.bold = True
+    r.font.color.rgb = color
+    r.font._rPr.set("spc", str(int(t.KICKER_TRACK_PT * 100)))
+    return tb
+
+def container(slide, pos, title, *, accent=None):
+    """Titled subsystem group box: Mist surface, small-caps title top-left."""
+    left, top, width, height = (Inches(v) for v in pos)
+    sp = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
+    sp.adjustments[0] = 0.03
+    _fill(sp, t.MIST); _line(sp, t.HAIRLINE, 1.25)
+    _small_caps(slide, (pos[0] + 0.22, pos[1] + 0.12, pos[2] - 0.44, 0.34),
+                title, t.ramp(accent, "c800") if accent else t.SLATE)
+    return sp
+
+def cylinder(slide, pos, label, *, accent=None):
+    """Data-store cylinder (a shared resource, often straddling lanes)."""
+    left, top, width, height = (Inches(v) for v in pos)
+    sp = slide.shapes.add_shape(MSO_SHAPE.CAN, left, top, width, height)
+    _fill(sp, t.ramp(accent, "c100") if accent else t.MIST); _line(sp, t.HAIRLINE, 1.5)
+    _centered(sp, label, size=11, color=t.GRAPHITE)
+    return sp
+
+def document(slide, pos, label, *, accent="blue"):
+    """Artifact / output — flowchart document shape."""
+    left, top, width, height = (Inches(v) for v in pos)
+    sp = slide.shapes.add_shape(MSO_SHAPE.FLOWCHART_DOCUMENT, left, top, width, height)
+    _fill(sp, t.ramp(accent, "c100")); _line(sp, t.ramp(accent, "c600"), 1.5)
+    _centered(sp, label, size=11, color=t.ramp(accent, "c800"))
+    return sp
+
+def diamond(slide, pos, label, *, accent="blue"):
+    """Decision node."""
+    left, top, width, height = (Inches(v) for v in pos)
+    sp = slide.shapes.add_shape(MSO_SHAPE.DIAMOND, left, top, width, height)
+    _fill(sp, t.WHITE); _line(sp, t.ramp(accent, "c600"), 1.5)
+    _centered(sp, label, size=10, color=t.ramp(accent, "c800"))
+    return sp
+
+def lane_label(slide, center_y, text):
+    """Vertical (rotated) environment label on the far left gutter."""
+    w = 2.2  # unrotated width spans the lane height after 270deg rotation
+    tb = slide.shapes.add_textbox(Inches(0.30 - w / 2), Inches(center_y - 0.25), Inches(w), Inches(0.5))
+    tb.rotation = 270
+    tf = tb.text_frame; tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+    p = tf.paragraphs[0]; p.alignment = PP_ALIGN.CENTER
+    r = p.add_run(); r.text = text.upper()
+    r.font.name = "Helvetica Neue"; r.font.size = Pt(13); r.font.bold = True
+    r.font.color.rgb = t.SLATE
+    r.font._rPr.set("spc", str(int(t.KICKER_TRACK_PT * 100)))
+    return tb
+
+def _seg(slide, x1, y1, x2, y2, color, *, arrow=False, width=1.25):
+    cn = slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,
+                                    Inches(x1), Inches(y1), Inches(x2), Inches(y2))
+    cn.line.color.rgb = color; cn.line.width = Pt(width)
+    if arrow:
+        from pptx.oxml.ns import qn
+        ln = cn.line._get_or_add_ln()
+        ln.append(ln.makeelement(qn("a:tailEnd"), {"type": "triangle", "w": "med", "len": "med"}))
+    return cn
+
+def feedback_arc(slide, x1, x2, y_box_top, label, *, rise=0.45):
+    """Loop-back indicator above a row: up from x1, across, down to x2 (arrowhead)."""
+    y_arc = y_box_top - rise
+    _seg(slide, x1, y_box_top, x1, y_arc, t.SILVER)
+    _seg(slide, x1, y_arc, x2, y_arc, t.SILVER)
+    _seg(slide, x2, y_arc, x2, y_box_top, t.SILVER, arrow=True)
+    lo, hi = sorted((x1, x2))
+    _small_caps(slide, (lo, y_arc - 0.34, hi - lo, 0.3), label, t.SLATE,
+                align=PP_ALIGN.CENTER, size=10)
+
+def connector_labeled(slide, x1, y1, x2, y2, label):
+    """Labeled cross-lane connector: silver arrow + a small caption at its midpoint."""
+    arrow(slide, x1, y1, x2, y2)
+    mx, my = (x1 + x2) / 2, (y1 + y2) / 2
+    _small_caps(slide, (mx - 1.0, my - 0.30, 2.0, 0.3), label, t.SLATE,
+                align=PP_ALIGN.CENTER, size=9)

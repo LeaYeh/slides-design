@@ -161,3 +161,64 @@ def closing(slide, accent="blue"):
                  color=t.INK, align=t.ALIGN_CENTER)
     text.textbox(slide, (1.2, 4.0, 11, 0.5), "questions → hello@example.com",
                  size=16, color=t.SLATE, align=t.ALIGN_CENTER)
+
+
+def arch_swimlane(slide, accent="blue"):
+    """Layout-rich architecture example: swim-lanes across environments, a shared
+    data store, grouped subsystem containers, a horizontal flow with a feedback arc,
+    a decision node, specialized shapes (cylinder/document/diamond), and labeled
+    cross-lane connectors. Echoes a hand-made MLOps lifecycle diagram."""
+    DEV, PROD = "orange", "blue"  # Dev = warm, Staging/Prod = cool (categorical)
+    text.kicker(slide, 0.9, 0.42, "Architecture", accent)
+    text.textbox(slide, (0.86, 0.8, 12, 0.7), "ML lifecycle across environments",
+                 size=24, bold=True, color=t.INK, tracking=-0.4)
+
+    divider_y = 4.15
+    shapes._seg(slide, 0.1, divider_y, 13.23, divider_y, t.HAIRLINE, width=1.0)
+
+    # --- containers (Mist) cover the divider where they sit ---
+    shapes.container(slide, (1.95, 1.62, 9.5, 2.3), "ML Training Pipeline", accent=DEV)
+    shapes.container(slide, (1.95, 4.42, 9.5, 2.35), "Staging / Prod Pipeline", accent=PROD)
+
+    # --- shared data store straddling the divider, in the left gutter ---
+    shapes.cylinder(slide, (0.52, 3.42, 1.2, 1.48), "Data\nWarehouse")
+
+    # --- lane labels (rotated) ---
+    shapes.lane_label(slide, 2.77, "Dev")
+    shapes.lane_label(slide, 5.6, "Staging / Prod")
+
+    # --- Dev lane: 3-stage flow + feedback arc + artifact ---
+    dev_y, bw, bh = 2.45, 2.05, 1.0
+    d1, d2, d3 = 2.35, 5.05, 7.75
+    shapes.box(slide, (d1, dev_y, bw, bh), "Data Prep", kind="focus", accent=DEV)
+    shapes.box(slide, (d2, dev_y, bw, bh), "Model Training", kind="focus", accent=DEV)
+    shapes.box(slide, (d3, dev_y, bw, bh), "Model Validation", kind="focus", accent=DEV)
+    cy = dev_y + bh / 2
+    shapes.arrow(slide, d1 + bw, cy, d2, cy)
+    shapes.arrow(slide, d2 + bw, cy, d3, cy)
+    shapes.feedback_arc(slide, d3 + bw / 2, d2 + bw / 2, dev_y, "Hyperparameter tuning")
+    shapes.document(slide, (10.15, dev_y, 1.25, bh), "Trained\nmodel", accent=DEV)
+    shapes.arrow(slide, d3 + bw, cy, 10.15, cy)
+
+    # --- Prod lane: 3-stage flow + decision + retrain loop ---
+    prod_y = 5.15
+    p1, p2, p3 = 2.35, 5.05, 7.75
+    shapes.box(slide, (p1, prod_y, bw, bh), "Data Prep", kind="plain")
+    shapes.box(slide, (p2, prod_y, bw, bh), "Retrain", kind="plain")
+    shapes.box(slide, (p3, prod_y, bw, bh), "Validate", kind="plain")
+    pcy = prod_y + bh / 2
+    shapes.arrow(slide, p1 + bw, pcy, p2, pcy)
+    shapes.arrow(slide, p2 + bw, pcy, p3, pcy)
+    shapes.diamond(slide, (10.05, prod_y - 0.15, 1.4, 1.3), "Perf\ndrop?", accent=PROD)
+    shapes.arrow(slide, p3 + bw, pcy, 10.05, pcy)
+    # retrain loop: down from diamond, left across, up into Data Prep (YES)
+    yb = 6.55
+    shapes._seg(slide, 10.75, prod_y + bh, 10.75, yb, t.SILVER)
+    shapes._seg(slide, 10.75, yb, p1 + bw / 2, yb, t.SILVER)
+    shapes._seg(slide, p1 + bw / 2, yb, p1 + bw / 2, prod_y + bh, t.SILVER, arrow=True)
+    shapes._small_caps(slide, (9.7, yb - 0.02, 1.1, 0.3), "Yes", t.ramp(PROD, "c800"), size=9)
+
+    # --- labeled cross-lane connectors ---
+    shapes.connector_labeled(slide, 1.72, 3.7, d1, cy + 0.15, "POC data")
+    shapes.connector_labeled(slide, 1.72, 4.65, p1, pcy - 0.15, "Batch fetch")
+    shapes.connector_labeled(slide, 10.75, dev_y + bh, 10.75, 4.42, "Deploy")

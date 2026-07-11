@@ -8,7 +8,7 @@ from slidestyle.theme import NS
 def main(path="dist/slide-style.pptx"):
     prs = Presentation(path)
     n = len(list(prs.slides))
-    assert n == 14, f"expected 14 gallery slides, got {n}"
+    assert n == 15, f"expected 15 gallery slides, got {n}"
     assert prs.slide_width == 12192000 and prs.slide_height == 6858000, "not 16:9"
     tp = prs.slide_masters[0].part.part_related_by(RT.THEME)
     r = etree.fromstring(tp.blob)
