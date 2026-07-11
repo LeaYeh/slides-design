@@ -60,6 +60,15 @@ def band(slide, pos, label, tag, accent):
     r = p.add_run(); r.text = "   " + label
     r.font.name = "Helvetica Neue"; r.font.size = Pt(16); r.font.bold = True
     r.font.color.rgb = t.ramp(accent, "c800")
+    if tag:
+        # small uppercase category tag, right-aligned inside the band
+        tb = slide.shapes.add_textbox(left + width - Inches(2.2), top, Inches(2.0), height)
+        ttf = tb.text_frame; ttf.vertical_anchor = MSO_ANCHOR.MIDDLE
+        tp = ttf.paragraphs[0]; tp.alignment = PP_ALIGN.RIGHT
+        tr = tp.add_run(); tr.text = tag.upper()
+        tr.font.name = "Helvetica Neue"; tr.font.size = Pt(11); tr.font.bold = True
+        tr.font.color.rgb = t.ramp(accent, "c800")
+        tr.font._rPr.set("spc", str(int(t.KICKER_TRACK_PT * 100)))
     return sp
 
 def kpi_tile(slide, pos, number, label, *, accent=None):
