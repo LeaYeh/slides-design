@@ -134,3 +134,31 @@ def arch_nested(slide, accent="blue"):
     for label, kind in subs:
         shapes.box(slide, (x, 3.6, 3.4, 1.3), label, kind=kind, accent=accent)
         x += 3.7
+
+def image_caption(slide, accent="blue"):
+    text.kicker(slide, 0.9, 0.9, "Visual", accent)
+    text.title(slide, 0.86, 1.35, 6, "Image + caption", "heading")
+    ph = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(1.3),
+                                Inches(5.6), Inches(4.6))
+    ph.adjustments[0] = 0.03
+    ph.fill.solid(); ph.fill.fore_color.rgb = t.MIST; ph.line.color.rgb = t.HAIRLINE
+    ph.line.width = Pt(1.5)
+    p = ph.text_frame.paragraphs[0]; p.alignment = PP_ALIGN.CENTER
+    r = p.add_run(); r.text = "[ image ]"; r.font.name = "Helvetica Neue"
+    r.font.size = Pt(14); r.font.color.rgb = t.SILVER
+    text.body(slide, 0.9, 2.7, 5.4, "Body sits left; image fills the right half.")
+    text.caption(slide, 6.8, 6.0, 5.6, "Figure 1 — caption in Slate")
+
+def quote(slide, accent="blue"):
+    text.textbox(slide, (1.2, 2.4, 11, 2),
+                 "“Good design is as little design as possible.”",
+                 size=36, bold=True, color=t.INK, align=t.ALIGN_CENTER, line=1.2, tracking=-0.4)
+    text.textbox(slide, (1.2, 4.4, 11, 0.5), "— Dieter Rams",
+                 size=16, color=t.SLATE, align=t.ALIGN_CENTER)
+
+def closing(slide, accent="blue"):
+    _accent_bar(slide, 6.13, 2.7, accent)  # roughly centered
+    text.textbox(slide, (1.2, 3.0, 11, 1), "Thank you", size=30, bold=True,
+                 color=t.INK, align=t.ALIGN_CENTER)
+    text.textbox(slide, (1.2, 4.0, 11, 0.5), "questions → hello@example.com",
+                 size=16, color=t.SLATE, align=t.ALIGN_CENTER)
