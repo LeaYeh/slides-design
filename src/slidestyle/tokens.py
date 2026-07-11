@@ -1,6 +1,6 @@
 """Design tokens — the single source of truth for colors, type, geometry."""
 from pptx.dml.color import RGBColor
-from pptx.util import Inches, Pt
+from pptx.util import Inches, Pt, Emu
 from pptx.enum.text import PP_ALIGN
 
 def rgb(h: str) -> RGBColor:
@@ -38,9 +38,9 @@ TYPE = {
 }
 KICKER_TRACK_PT = 1.7  # ~0.14em at 12pt
 
-# --- 16:9 canvas ---
-SLIDE_W = Inches(13.333)
-SLIDE_H = Inches(7.5)
+# --- 16:9 canvas (exact standard EMU, not the truncated 13.333") ---
+SLIDE_W = Emu(12192000)
+SLIDE_H = Emu(6858000)
 MARGIN  = Inches(0.9)
 
 ALIGN_LEFT = PP_ALIGN.LEFT
