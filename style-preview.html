@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Slide Style — Preview</title>
+<style>
+  :root{
+    --ink:#1D1D1F; --graphite:#424245; --slate:#6E6E73; --silver:#AEAEB2;
+    --hairline:#D2D2D7; --mist:#F5F5F7; --white:#FFFFFF;
+    --teal-900:#0B5F60; --teal-800:#0A6E6F; --teal-600:#22B5B7;
+    --teal-400:#6FD6D8; --teal-300:#A2E8E9; --teal-100:#E8FBFC;
+    --font: -apple-system, "Helvetica Neue", "Inter", Arial, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font); color:var(--ink); background:#e9e9ec; padding:48px; line-height:1.4;}
+  .wrap{max-width:1100px; margin:0 auto;}
+  h1.page{font-size:34px; font-weight:600; letter-spacing:-.02em; margin-bottom:4px}
+  .lead{color:var(--slate); font-size:16px; margin-bottom:40px}
+  .kicker{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--teal-800); font-weight:600; margin:44px 0 14px}
+  /* swatches */
+  .row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:8px}
+  .sw{width:150px; height:88px; border-radius:12px; padding:10px 12px; display:flex; flex-direction:column; justify-content:space-between; border:1px solid rgba(0,0,0,.06)}
+  .sw b{font-size:13px; font-weight:600}
+  .sw span{font-size:11px; font-family:ui-monospace,Menlo,monospace; opacity:.8}
+  .note{font-size:13px; color:var(--slate); margin-top:6px}
+  /* type scale */
+  .type>div{border-bottom:1px solid var(--hairline); padding:14px 0; display:flex; align-items:baseline; gap:20px}
+  .type .tag{width:130px; flex:none; font-size:11px; color:var(--silver); font-family:ui-monospace,Menlo,monospace}
+  /* slide mockups */
+  .slides{display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:16px}
+  .slide{aspect-ratio:16/9; background:var(--white); border-radius:14px; box-shadow:0 8px 30px rgba(0,0,0,.10); padding:46px 52px; position:relative; overflow:hidden}
+  .slide .sk{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--teal-800); font-weight:600}
+  .slide .caption{position:absolute; left:0; bottom:-26px; font-size:12px; color:var(--slate); width:100%; text-align:center}
+  .slide h2{font-size:34px; font-weight:600; letter-spacing:-.02em; line-height:1.1}
+  .slide p{color:var(--slate); font-size:15px}
+  .accent-bar{width:52px; height:5px; background:var(--teal-600); border-radius:3px}
+  .full-teal{background:linear-gradient(135deg,var(--teal-900),var(--teal-800)); color:#fff}
+  .full-teal .sk{color:var(--teal-300)}
+  .full-teal p{color:rgba(255,255,255,.75)}
+  /* color cards mock */
+  .cards{display:flex; gap:14px; margin-top:26px}
+  .card{flex:1; border-radius:12px; padding:16px; }
+  .card .n{font-size:30px; font-weight:600; letter-spacing:-.02em}
+  .card .l{font-size:12px; color:var(--slate); margin-top:4px}
+  .c1{background:var(--teal-100)} .c2{background:var(--mist)} .c3{background:var(--teal-100)}
+  .card .n.teal{color:var(--teal-800)}
+  /* arch diagram mock */
+  .arch{display:flex; align-items:center; gap:14px; margin-top:30px}
+  .box{border:1.5px solid var(--hairline); border-radius:10px; padding:14px 10px; font-size:12px; color:var(--graphite); text-align:center; flex:1; background:#fff}
+  .box.hot{border-color:var(--teal-600); background:var(--teal-100); color:var(--teal-800); font-weight:600}
+  .arw{color:var(--silver); font-size:18px}
+  ul.mini{margin-top:22px; list-style:none}
+  ul.mini li{padding:8px 0; font-size:15px; color:var(--graphite); display:flex; gap:12px; align-items:baseline}
+  ul.mini li::before{content:""; width:7px; height:7px; border-radius:2px; background:var(--teal-600); flex:none; transform:translateY(2px)}
+  .big-stmt{font-size:40px; font-weight:600; letter-spacing:-.02em; line-height:1.15}
+  .big-stmt em{font-style:normal; color:var(--teal-800)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="page">Slide Style — Visual Spec</h1>
+  <div class="lead">Apple-Keynote minimalism · English · 16:9 · hierarchy + color-cards + highlight + architecture diagrams</div>
+
+  <div class="kicker">Neutral scale — the hierarchy</div>
+  <div class="row">
+    <div class="sw" style="background:#1D1D1F;color:#fff"><b>Ink</b><span>#1D1D1F · title/body</span></div>
+    <div class="sw" style="background:#424245;color:#fff"><b>Graphite</b><span>#424245 · strong text</span></div>
+    <div class="sw" style="background:#6E6E73;color:#fff"><b>Slate</b><span>#6E6E73 · secondary</span></div>
+    <div class="sw" style="background:#AEAEB2;color:#111"><b>Silver</b><span>#AEAEB2 · muted</span></div>
+    <div class="sw" style="background:#D2D2D7;color:#111"><b>Hairline</b><span>#D2D2D7 · divider</span></div>
+    <div class="sw" style="background:#F5F5F7;color:#111"><b>Mist</b><span>#F5F5F7 · surface</span></div>
+    <div class="sw" style="background:#fff;color:#111"><b>White</b><span>#FFFFFF · canvas</span></div>
+  </div>
+  <div class="note">Text hierarchy is built from Ink → Graphite → Slate → Silver. No pure black; #1D1D1F reads softer, more Apple.</div>
+
+  <div class="kicker">Theme ramp — teal (your color, extended for contrast)</div>
+  <div class="row">
+    <div class="sw" style="background:#0B5F60;color:#fff"><b>Teal 900</b><span>#0B5F60 · deep bg</span></div>
+    <div class="sw" style="background:#0A6E6F;color:#fff"><b>Teal 800</b><span>#0A6E6F · accent text</span></div>
+    <div class="sw" style="background:#22B5B7;color:#fff"><b>Teal 600 ★</b><span>#22B5B7 · primary fill</span></div>
+    <div class="sw" style="background:#6FD6D8;color:#093f40"><b>Teal 400</b><span>#6FD6D8 · mid</span></div>
+    <div class="sw" style="background:#A2E8E9;color:#093f40"><b>Teal 300</b><span>#A2E8E9 · highlight</span></div>
+    <div class="sw" style="background:#E8FBFC;color:#093f40"><b>Teal 100</b><span>#E8FBFC · tint surface</span></div>
+  </div>
+  <div class="note">Your three anchors are 600 / 300 / 100. I added <b>800/900</b> (darker) because #22B5B7 on white is too low-contrast for text — accent <em>text</em> uses Teal 800; fills/bars/shapes use Teal 600; highlight background uses Teal 100/300.</div>
+
+  <div class="kicker">Type scale — hierarchy is the design</div>
+  <div class="type">
+    <div><span class="tag">Cover 60/700</span><span style="font-size:52px;font-weight:600;letter-spacing:-.02em">Designing with clarity</span></div>
+    <div><span class="tag">Heading 34/600</span><span style="font-size:34px;font-weight:600;letter-spacing:-.02em">Section heading</span></div>
+    <div><span class="tag">Statement 40/600</span><span style="font-size:34px;font-weight:600">A single bold idea per slide</span></div>
+    <div><span class="tag">Kicker 12/600</span><span style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#0A6E6F;font-weight:600">Overline label</span></div>
+    <div><span class="tag">Body 18/400</span><span style="font-size:18px;color:#424245">Body copy sits at Graphite, generous line-height, never crowded.</span></div>
+    <div><span class="tag">Caption 13/400</span><span style="font-size:13px;color:#6E6E73">Caption / footnote in Slate</span></div>
+  </div>
+  <div class="note">Font: <b>Helvetica Neue → Arial</b> fallback (zero-install, Apple feel) — or <b>Inter</b> embedded for a closer-to-SF look. Pick in the spec.</div>
+
+  <div class="kicker">Layout mockups (5 of the archetypes)</div>
+  <div class="slides">
+    <div class="slide">
+      <div class="accent-bar" style="margin-bottom:20px"></div>
+      <div class="sk">Product Vision · 2026</div>
+      <h2 style="font-size:44px;margin-top:10px">Designing<br>with clarity</h2>
+      <p style="margin-top:14px">A minimalist system for professional decks</p>
+      <div class="caption">1 · Cover / Title</div>
+    </div>
+
+    <div class="slide full-teal" style="display:flex;flex-direction:column;justify-content:center">
+      <div class="sk">02</div>
+      <h2 style="color:#fff;font-size:40px;margin-top:8px">The Approach</h2>
+      <div class="caption">2 · Section divider</div>
+    </div>
+
+    <div class="slide" style="display:flex;flex-direction:column;justify-content:center">
+      <div class="big-stmt">Professionalism comes from<br><em>hierarchy</em>, not decoration.</div>
+      <div class="caption">3 · Big statement</div>
+    </div>
+
+    <div class="slide">
+      <div class="sk">Metrics</div>
+      <h2 style="font-size:28px;margin-top:8px">Impact at a glance</h2>
+      <div class="cards">
+        <div class="card c1"><div class="n teal">3.2×</div><div class="l">faster to draft</div></div>
+        <div class="card c2"><div class="n">100%</div><div class="l">on-brand</div></div>
+        <div class="card c3"><div class="n teal">12</div><div class="l">layouts</div></div>
+      </div>
+      <div class="caption">4 · Color cards / KPI tiles</div>
+    </div>
+
+    <div class="slide">
+      <div class="sk">Architecture</div>
+      <h2 style="font-size:26px;margin-top:8px">How a deck is generated</h2>
+      <div class="arch">
+        <div class="box">Content</div><div class="arw">→</div>
+        <div class="box hot">Style template</div><div class="arw">→</div>
+        <div class="box">pptx deck</div>
+      </div>
+      <ul class="mini">
+        <li>Hierarchical text with a single accent</li>
+        <li>Highlight key terms in <span style="background:#A2E8E9;padding:0 4px;border-radius:3px">teal</span></li>
+      </ul>
+      <div class="caption">5 · Architecture diagram + highlight</div>
+    </div>
+
+    <div class="slide" style="display:flex;flex-direction:column;justify-content:center;text-align:center;align-items:center">
+      <div class="accent-bar" style="margin-bottom:22px"></div>
+      <h2 style="font-size:30px">Thank you</h2>
+      <p style="margin-top:8px">questions → hello@example.com</p>
+      <div class="caption">6 · Closing</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
