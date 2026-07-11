@@ -1,6 +1,5 @@
 """Styled text helpers built on the token type scale."""
 from pptx.util import Inches, Pt
-from pptx.oxml.ns import qn
 from . import tokens as t
 
 def _set_tracking(run, pts: float):

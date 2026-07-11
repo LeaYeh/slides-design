@@ -1,7 +1,6 @@
 """Assemble dist/slide-style.pptx: one labeled example slide per archetype."""
 from pathlib import Path
 from pptx import Presentation
-from pptx.util import Inches, Pt
 from . import tokens as t
 from .theme import apply_theme
 from . import layouts, text

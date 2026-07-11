@@ -81,8 +81,7 @@ def highlight(slide, accent="blue"):
                                 Inches(5.2), Inches(1.0))
     hl.adjustments[0] = 0.12
     hl.fill.solid(); hl.fill.fore_color.rgb = t.ramp(accent, "c300"); hl.line.fill.background()
-    from pptx.enum.text import MSO_ANCHOR as _A
-    hl.text_frame.vertical_anchor = _A.MIDDLE
+    hl.text_frame.vertical_anchor = MSO_ANCHOR.MIDDLE
     p = hl.text_frame.paragraphs[0]; p.alignment = PP_ALIGN.CENTER
     r = p.add_run(); r.text = "the one number that matters"
     r.font.name = "Helvetica Neue"; r.font.size = Pt(20); r.font.bold = True

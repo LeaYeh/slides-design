@@ -1,5 +1,5 @@
 """Shape kit — the locked-style architecture/diagram building blocks."""
-from pptx.util import Inches, Pt, Emu
+from pptx.util import Inches, Pt
 from pptx.enum.shapes import MSO_SHAPE, MSO_CONNECTOR
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
 from . import tokens as t
