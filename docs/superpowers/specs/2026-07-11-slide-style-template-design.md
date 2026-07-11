@@ -93,10 +93,54 @@ Each is a slide layout in the template's master.
 6. **Two-column** — text|text or text|visual split.
 7. **Color cards / KPI tiles** — row of 2–4 tiles on tint surfaces; big number (accent-800) + label.
 8. **Highlight / callout** — key term/number highlighted with accent-300 background + supporting text.
-9. **Architecture diagram** — canvas with styled box + arrow building blocks; one "hot" box uses accent.
+9. **Architecture diagram** — a *family*, not one slide. See "Architecture Diagram Subsystem" below.
 10. **Image + caption** — full or half image with caption in Slate.
 11. **Quote** — large quotation with attribution.
 12. **Closing** — minimal end slide (accent bar, "Thank you", contact).
+
+## Architecture Diagram Subsystem
+
+Architecture diagrams are a key focus. **Hybrid strategy** — routine diagrams use native
+PowerPoint shapes (fully editable, no toolchain); complex/publication-grade diagrams are
+generated as SVG in our palette and embedded.
+
+### Route A — native pptx shapes (the default)
+
+A **shape kit** of locked-style, real PowerPoint shapes (rounded rectangles + connectors)
+Claude places and edits directly:
+
+- `box` (plain node, white/Mist), `focus box` (accent-100 fill + accent-600 border +
+  accent-800 text), `neutral box` (Mist), `arrow` (thin, Silver/Slate), `group label`
+  (kicker-style small caps), `legend` (categorical dots).
+
+Three ready patterns cover ~90% of needs:
+- **Pattern A — horizontal flow**: left→right pipeline/stages, one focus node.
+- **Pattern B — layered stack**: horizontal bands, three accents as categories.
+- **Pattern C — nested container**: a boundary box holding sub-nodes (grouping).
+
+Visual rules: hairline borders `#D2D2D7`, ~10px radius, generous padding, depth via
+grouping not decoration; thin arrows; ≤5–7 nodes per slide.
+
+### Route B — SVG generation, embedded (for complex/high-polish diagrams)
+
+Prior art: [`yizhiyanhua-ai/fireworks-tech-graph`](https://github.com/yizhiyanhua-ai/fireworks-tech-graph)
+(a skill that turns NL → SVG technical diagrams). We **borrow its structure, restyle to ours**:
+
+- Its **diagram-type classification + per-type layout rules** (architecture, data-flow,
+  flowchart, sequence, ER, state-machine, etc.) and its **validate → visual-review loop**.
+- Rendered with **our tokens** (neutral scale + 3 accent ramps, Helvetica Neue) — not its
+  8 styles. One new "style" = our Apple-minimal palette.
+- Export SVG (via `cairosvg`), **insert into the pptx slide**; note in the guide that
+  PowerPoint 365/2016+ can "Convert to Shape" for editing (fidelity caveat for Keynote /
+  Google Slides).
+
+### Decision tree (goes into `style-guide.md`)
+
+- Simple flow / pipeline → Route A, Pattern A.
+- System layers → Route A, Pattern B.
+- Grouping / boundaries → Route A, Pattern C.
+- Many nodes, specialized type (sequence/ER/state/UML), or "make it publication-grade"
+  → Route B (SVG), pick the matching diagram-type rules, render in our palette, embed.
 
 ## Deliverables
 
@@ -104,9 +148,13 @@ Each is a slide layout in the template's master.
   Helvetica Neue font scheme, and the 12 slide layouts in the master.
 - `style-guide.md` — tokens + per-layout guidance ("what it is, when to use, how to
   prompt Claude to fill it") to hand to Claude alongside content during generation.
-- `style-preview.html` / `style-preview-v2.html` — the visual reference (already built).
+- `style-guide.md` also carries the **architecture-diagram decision tree** + the SVG
+  route's diagram-type rules (restyled to our palette) + per-pattern prompting guidance.
+- `style-preview.html` / `style-preview-v2.html` / `style-preview-arch.html` — visual
+  reference (already built).
 
 **Not included (YAGNI):** automatic deck generator, `tokens.json`, CJK fonts, 4:3 variant.
+The SVG route reuses fireworks-tech-graph's *approach*, not its code as a dependency.
 
 ## Build approach (for the plan)
 
@@ -116,7 +164,10 @@ so the template is authored by:
    accent1–6 + neutrals, and the Helvetica Neue font scheme) — via OOXML.
 2. Building the 12 layouts in the slide master (placeholder + styled sample shapes),
    editing OOXML / starting from a blank base `.pptx` where python-pptx falls short.
-3. Verifying: open the produced `.pptx`, confirm theme colors, fonts, and each layout
-   render correctly and are editable.
+3. The architecture shape kit + 3 patterns are built as real shapes on example slides.
+4. The SVG route (Route B) is a small generator + our-palette style reference + the
+   borrowed diagram-type layout rules and validation loop; SVGs are embedded into slides.
+5. Verifying: open the produced `.pptx`, confirm theme colors, fonts, and each layout
+   render correctly and are editable; for Route B, run the validate → visual-review loop.
 
 Details and task breakdown belong to the implementation plan.
