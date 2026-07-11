@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Architecture Diagram — Design</title>
+<style>
+  :root{
+    --ink:#1D1D1F;--graphite:#424245;--slate:#6E6E73;--silver:#AEAEB2;
+    --hairline:#D2D2D7;--mist:#F5F5F7;
+    --blue-6:#2563EB;--blue-8:#1D4ED8;--blue-1:#EAF2FE;
+    --teal-6:#22B5B7;--teal-8:#0A6E6F;--teal-1:#E8FBFC;
+    --orng-6:#F97316;--orng-8:#C2410C;--orng-1:#FFF3EA;
+    --font:-apple-system,"Helvetica Neue","Inter",Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);color:var(--ink);background:#e9e9ec;padding:48px;line-height:1.4}
+  .wrap{max-width:1120px;margin:0 auto}
+  h1.page{font-size:32px;font-weight:600;letter-spacing:-.02em}
+  .lead{color:var(--slate);font-size:15px;margin:4px 0}
+  .kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--slate);margin:40px 0 12px}
+  /* shape kit */
+  .kit{display:flex;gap:14px;flex-wrap:wrap;align-items:center;background:#fff;border-radius:12px;padding:24px;box-shadow:0 8px 26px rgba(0,0,0,.08)}
+  .box{border:1.5px solid var(--hairline);border-radius:10px;padding:14px 18px;font-size:14px;color:var(--graphite);font-weight:600;background:#fff;text-align:center}
+  .box .sub{font-weight:400;color:var(--slate);font-size:11px;margin-top:2px}
+  .box.focus{border-color:var(--blue-6);background:var(--blue-1);color:var(--blue-8)}
+  .box.mist{background:var(--mist);border-color:var(--mist)}
+  .arw{color:var(--silver);font-size:20px}
+  .glabel{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--slate)}
+  .legend{display:flex;gap:16px;font-size:12px;color:var(--slate);align-items:center}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  /* slide frame */
+  .slide{aspect-ratio:16/9;background:#fff;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.10);padding:38px 46px;position:relative;margin-bottom:44px}
+  .slide .sk{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-8);font-weight:600}
+  .slide h2{font-size:26px;font-weight:600;letter-spacing:-.02em;margin:4px 0 4px}
+  .slide .cap{position:absolute;bottom:-26px;left:0;width:100%;text-align:center;font-size:12px;color:var(--slate)}
+  .flow{display:flex;align-items:center;gap:16px;margin-top:30px}
+  .flow .box{flex:1}
+  /* layered */
+  .stack{margin-top:26px;display:flex;flex-direction:column;gap:10px}
+  .band{border-radius:10px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;font-weight:600;color:var(--graphite);border:1.5px solid var(--hairline)}
+  .band .tag{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--slate);font-weight:600}
+  .band.b1{background:var(--blue-1);border-color:var(--blue-6);color:var(--blue-8)}
+  .band.b2{background:var(--teal-1);border-color:var(--teal-6);color:var(--teal-8)}
+  .band.b3{background:var(--orng-1);border-color:var(--orng-6);color:var(--orng-8)}
+  /* nested */
+  .container{margin-top:24px;border:1.5px solid var(--hairline);border-radius:12px;padding:20px;background:var(--mist)}
+  .container>.glabel{margin-bottom:12px;display:block}
+  .subrow{display:flex;gap:12px}
+  .subrow .box{flex:1;background:#fff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="page">Architecture Diagrams — a first-class subsystem</h1>
+  <div class="lead">A styled shape kit + three ready patterns Claude can drop in and adapt. All real editable shapes.</div>
+
+  <div class="kicker">Shape kit — the locked-style building blocks</div>
+  <div class="kit">
+    <div class="box">Service<div class="sub">plain node</div></div>
+    <div class="box focus">Focus<div class="sub">the point</div></div>
+    <div class="box mist">Neutral</div>
+    <span class="arw">→</span>
+    <div class="glabel">Group label</div>
+    <span style="width:1px;height:34px;background:var(--hairline)"></span>
+    <div class="legend">
+      <span><span class="dot" style="background:var(--blue-6)"></span>Ingest</span>
+      <span><span class="dot" style="background:var(--teal-6)"></span>Process</span>
+      <span><span class="dot" style="background:var(--orng-6)"></span>Serve</span>
+    </div>
+  </div>
+
+  <div class="kicker">Pattern A — horizontal flow (pipeline / stages)</div>
+  <div class="slide">
+    <div class="sk">Architecture</div>
+    <h2>How a deck is generated</h2>
+    <div class="flow">
+      <div class="box">Content<div class="sub">title · body · concept</div></div>
+      <span class="arw">→</span>
+      <div class="box focus">Style template<div class="sub">theme + 12 layouts</div></div>
+      <span class="arw">→</span>
+      <div class="box">Claude<div class="sub">python-pptx</div></div>
+      <span class="arw">→</span>
+      <div class="box">.pptx deck<div class="sub">editable</div></div>
+    </div>
+    <div class="cap">Pattern A · left→right flow, one focus node</div>
+  </div>
+
+  <div class="kicker">Pattern B — layered stack (system layers, categorical colors)</div>
+  <div class="slide">
+    <div class="sk">System</div>
+    <h2>Platform layers</h2>
+    <div class="stack">
+      <div class="band b3"><span>Presentation · UI</span><span class="tag">Serve</span></div>
+      <div class="band b2"><span>Application · services & logic</span><span class="tag">Process</span></div>
+      <div class="band b1"><span>Data · storage & ingest</span><span class="tag">Ingest</span></div>
+    </div>
+    <div class="cap">Pattern B · stacked bands, three accents as categories</div>
+  </div>
+
+  <div class="kicker">Pattern C — nested container (grouping / boundaries)</div>
+  <div class="slide">
+    <div class="sk">Architecture</div>
+    <h2>Service boundary</h2>
+    <div class="container">
+      <span class="glabel">Core service</span>
+      <div class="subrow">
+        <div class="box">API gateway</div>
+        <div class="box focus">Engine</div>
+        <div class="box">Cache</div>
+      </div>
+    </div>
+    <div class="cap">Pattern C · a boundary box holding sub-nodes</div>
+  </div>
+
+  <div class="lead" style="margin-top:8px"><b>Recommendation:</b> ship the shape kit + these 3 patterns as the "architecture" layout family. Claude picks the closest pattern and edits it — every box, arrow, and band is a real PowerPoint shape you can move and retype.</div>
+</div>
+</body>
+</html>
