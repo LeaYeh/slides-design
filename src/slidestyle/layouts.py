@@ -88,3 +88,49 @@ def highlight(slide, accent="blue"):
     r.font.name = "Helvetica Neue"; r.font.size = Pt(20); r.font.bold = True
     r.font.color.rgb = t.ramp(accent, "c900")
     text.body(slide, 0.9, 4.3, 10, "Supporting sentence explains why it matters.")
+
+def arch_flow(slide, accent="blue"):
+    """Pattern A — horizontal flow, one focus node."""
+    text.kicker(slide, 0.9, 0.9, "Architecture", accent)
+    text.title(slide, 0.86, 1.35, 11, "How a deck is generated", "heading")
+    nodes = [("Content", "title · body · concept", "plain"),
+             ("Style template", "theme + 12 layouts", "focus"),
+             ("Claude", "python-pptx", "plain"),
+             (".pptx deck", "editable", "plain")]
+    x, y, w, h = 0.9, 3.1, 2.5, 1.2
+    prev = None
+    for label, sub, kind in nodes:
+        shapes.box(slide, (x, y, w, h), label, kind=kind, accent=accent, sub=sub)
+        if prev is not None:
+            shapes.arrow(slide, prev, y + h/2, x, y + h/2)
+        prev = x + w
+        x += w + 0.55
+
+def arch_layered(slide, accent="blue"):
+    """Pattern B — layered stack, three accents as categories."""
+    text.kicker(slide, 0.9, 0.9, "System", accent)
+    text.title(slide, 0.86, 1.35, 11, "Platform layers", "heading")
+    rows = [("Presentation · UI", "Serve", "orange"),
+            ("Application · services & logic", "Process", "teal"),
+            ("Data · storage & ingest", "Ingest", "blue")]
+    y = 2.8
+    for label, tag, acc in rows:
+        shapes.band(slide, (0.9, y, 11.5, 1.05), label, tag, acc)
+        y += 1.25
+
+def arch_nested(slide, accent="blue"):
+    """Pattern C — nested container holding sub-nodes."""
+    text.kicker(slide, 0.9, 0.9, "Architecture", accent)
+    text.title(slide, 0.86, 1.35, 11, "Service boundary", "heading")
+    cont = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.9), Inches(2.8),
+                                  Inches(11.5), Inches(2.6))
+    cont.adjustments[0] = 0.05
+    cont.fill.solid(); cont.fill.fore_color.rgb = t.MIST; cont.line.color.rgb = t.HAIRLINE
+    cont.line.width = Pt(1.5)
+    text.textbox(slide, (1.15, 3.0, 6, 0.4), "CORE SERVICE", size=12, bold=True,
+                 color=t.SLATE, upper=True, tracking=t.KICKER_TRACK_PT)
+    subs = [("API gateway", "plain"), ("Engine", "focus"), ("Cache", "plain")]
+    x = 1.2
+    for label, kind in subs:
+        shapes.box(slide, (x, 3.6, 3.4, 1.3), label, kind=kind, accent=accent)
+        x += 3.7
