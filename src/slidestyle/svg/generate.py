@@ -127,49 +127,57 @@ def _lane_label(cx, cy, text):
             + '</g>')
 
 
-# --- Claude-Official-inspired palette (warm, layered, with depth) ---
-_BG   = "#F8F6F3"
-_STRK = "#4A4A4A"
-_TX   = "#1A1A1A"
-_TX2  = "#6A6A6A"
-_LN   = "#5A5A5A"
-_TINT = {"blue": "#A8C5E6", "green": "#9DD4C7", "beige": "#F4E4C1", "gray": "#E8E6E3"}
+# --- our-theme palette (blue/teal/orange), layered with depth (skill-quality layout) ---
+_BG   = s.MIST          # soft cool backdrop, on-brand (not stark white)
+_TX   = s.INK
+_TX2  = s.SLATE
+_LN   = s.SLATE         # connector gray
+_SW   = 2               # node stroke width
+# semantic node = (fill c300, stroke c800) from our ramps; neutral for storage
+def _pair(accent):
+    return (s.RAMPS[accent]["c300"], s.RAMPS[accent]["c800"])
+_NODE = {"teal": _pair("teal"), "blue": _pair("blue"), "orange": _pair("orange"),
+         "neutral": ("#E8E8EC", s.GRAPHITE)}
+_BAND = {"teal": s.RAMPS["teal"]["c100"], "blue": s.RAMPS["blue"]["c100"]}
 
-def _cnode(x, y, w, h, cat, name, tint):
-    fill = _TINT[tint]
+def _cnode(x, y, w, h, cat, name, key):
+    fill, strk = _NODE[key]
     parts = [f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="12" fill="{fill}" '
-             f'stroke="{_STRK}" stroke-width="2.5" filter="url(#sh)"/>']
+             f'stroke="{strk}" stroke-width="{_SW}" filter="url(#sh)"/>']
     parts.append(_txt(x+w/2, y+24, cat.upper(), size=11, color=_TX2, weight=700, track=1.2))
     parts.append(_txt(x+w/2, y+50, name, size=16, color=_TX, weight=600))
     return "".join(parts)
 
 def _cband(x, y, w, h, tint_hex):
     return (f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="18" fill="{tint_hex}" '
-            f'stroke="#D8D3CA" stroke-width="1.5" stroke-dasharray="7 5"/>')
+            f'stroke="{s.HAIRLINE}" stroke-width="1.5" stroke-dasharray="7 5"/>')
 
 def _ccyl(cx, top, w, h, cat, name):
+    fill, strk = _NODE["neutral"]
     x = cx - w/2; ry = 10
     body = (f'<path d="M{x},{top+ry} a{w/2},{ry} 0 0 1 {w},0 v{h-2*ry} '
-            f'a{w/2},{ry} 0 0 1 -{w},0 Z" fill="{_TINT["gray"]}" stroke="{_STRK}" '
-            f'stroke-width="2.5" filter="url(#sh)"/>')
-    lid = (f'<ellipse cx="{cx}" cy="{top+ry}" rx="{w/2}" ry="{ry}" fill="#F1EFEC" '
-           f'stroke="{_STRK}" stroke-width="2.5"/>')
+            f'a{w/2},{ry} 0 0 1 -{w},0 Z" fill="{fill}" stroke="{strk}" '
+            f'stroke-width="{_SW}" filter="url(#sh)"/>')
+    lid = (f'<ellipse cx="{cx}" cy="{top+ry}" rx="{w/2}" ry="{ry}" fill="#F1F1F4" '
+           f'stroke="{strk}" stroke-width="{_SW}"/>')
     return (body + lid
             + _txt(cx, top+h/2-4, cat.upper(), size=10, color=_TX2, weight=700, track=1.0)
             + _txt(cx, top+h/2+13, name, size=11, color=_TX, weight=600))
 
 def _cdoc(x, y, w, h, cat, name):
+    fill, strk = _NODE["orange"]
     wave = h*0.16
     d = f'M{x},{y} h{w} v{h-wave} q{-w/4},{wave*1.4} {-w/2},0 t{-w/2},0 Z'
-    return (f'<path d="{d}" fill="{_TINT["beige"]}" stroke="{_STRK}" stroke-width="2.5" '
+    return (f'<path d="{d}" fill="{fill}" stroke="{strk}" stroke-width="{_SW}" '
             f'stroke-linejoin="round" filter="url(#sh)"/>'
             + _txt(x+w/2, y+22, cat.upper(), size=10, color=_TX2, weight=700, track=1.0)
             + _txt(x+w/2, y+44, name, size=14, color=_TX, weight=600))
 
 def _cdia(cx, cy, half, name):
+    fill, strk = _NODE["orange"]
     pts = f"{cx},{cy-half} {cx+half},{cy} {cx},{cy+half} {cx-half},{cy}"
-    return (f'<polygon points="{pts}" fill="{_TINT["blue"]}" stroke="{_STRK}" '
-            f'stroke-width="2.5" filter="url(#sh)"/>'
+    return (f'<polygon points="{pts}" fill="{fill}" stroke="{strk}" '
+            f'stroke-width="{_SW}" filter="url(#sh)"/>'
             + _txt(cx, cy-6, "DECISION", size=9, color=_TX2, weight=700, track=1.0)
             + _txt(cx, cy+11, name, size=13, color=_TX, weight=600))
 
@@ -194,9 +202,9 @@ def _clabel(cx, cy, text):
             + _txt(cx, cy, text, size=12, color=_LN, weight=500))
 
 def swimlane_svg():
-    """MLOps-lifecycle swim-lane in a warm, layered, Claude-official-inspired style
-    (1280x760): soft semantic node tints, dark strokes + depth, category labels,
-    semantic solid/dashed connectors, and a legend."""
+    """MLOps-lifecycle swim-lane (1280x760): skill-quality layout — soft node tints in
+    OUR theme (teal Dev / blue Prod / orange artifact+decision / neutral store), accent
+    strokes + depth, category labels, semantic solid/dashed connectors, and a legend."""
     W, H = 1280, 760
     p = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" font-family=\'{s.FONT}\'>',
          '<defs>'
@@ -212,9 +220,9 @@ def swimlane_svg():
     p.append(_txt(W/2, 88, "From dev experimentation to production retraining",
                   size=15, color=_TX2, weight=400))
 
-    # lane bands + left labels
-    p.append(_cband(120, 150, 1040, 215, "#FBF7F0"))   # Dev — warm
-    p.append(_cband(120, 445, 1040, 215, "#F2F2F0"))   # Prod — cool
+    # lane bands + left labels (faint theme tints — teal Dev, blue Prod)
+    p.append(_cband(120, 150, 1040, 215, _BAND["teal"]))
+    p.append(_cband(120, 445, 1040, 215, _BAND["blue"]))
     p.append(_txt(70, 257, "Dev", size=15, color=_TX2, weight=700, anchor="middle"))
     p.append(_txt(64, 545, "Staging", size=15, color=_TX2, weight=700, anchor="middle"))
     p.append(_txt(64, 566, "/ Prod", size=15, color=_TX2, weight=700, anchor="middle"))
@@ -226,8 +234,8 @@ def swimlane_svg():
     nw, nh = 185, 84
     # --- Dev lane ---
     dev_y, dcy = 220, 262
-    devs = [("Ingest", "Data Prep", "green"), ("Train", "Model Training", "green"),
-            ("Evaluate", "Model Validation", "green")]
+    devs = [("Ingest", "Data Prep", "teal"), ("Train", "Model Training", "teal"),
+            ("Evaluate", "Model Validation", "teal")]
     for x, (cat, nm, tint) in zip(nodes_x, devs):
         p.append(_cnode(x, dev_y, nw, nh, cat, nm, tint))
     p.append(_cflow([(nodes_x[0]+nw, dcy), (nodes_x[1], dcy)]))
@@ -242,8 +250,8 @@ def swimlane_svg():
 
     # --- Prod lane ---
     prod_y, pcy = 515, 557
-    prods = [("Ingest", "Data Prep", "gray"), ("Train", "Retrain", "blue"),
-             ("Evaluate", "Validate", "gray")]
+    prods = [("Ingest", "Data Prep", "blue"), ("Train", "Retrain", "blue"),
+             ("Evaluate", "Validate", "blue")]
     for x, (cat, nm, tint) in zip(nodes_x, prods):
         p.append(_cnode(x, prod_y, nw, nh, cat, nm, tint))
     p.append(_cflow([(nodes_x[0]+nw, pcy), (nodes_x[1], pcy)]))
@@ -266,7 +274,7 @@ def swimlane_svg():
 
     # --- legend (bottom-right, stacked) ---
     lx, ly, lw, lh = 1024, 626, 232, 118
-    p.append(_rrect(lx, ly, lw, lh, 10, "#FFFFFF", _STRK, 1.5))
+    p.append(_rrect(lx, ly, lw, lh, 10, "#FFFFFF", s.GRAPHITE, 1.5))
     p.append(_txt(lx+18, ly+24, "Legend", size=13, color=_TX, weight=700, anchor="start"))
     rows = [("", "primary flow"), ("4 3", "control · trigger"), ("6 4", "write · retrain")]
     for i, (dash, lab) in enumerate(rows):
