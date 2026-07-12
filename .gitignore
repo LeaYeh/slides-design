@@ -3,3 +3,6 @@ RESUME.md
 .venv/
 __pycache__/
 *.pyc
+
+# cached jsonresume payload (personal work history) — icons/manifest are fine, this isn't
+assets/resume.json

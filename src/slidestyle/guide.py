@@ -72,6 +72,34 @@ tracked · Body 18/400 Graphite · Caption 13/400 Slate.
 Give Claude: the content (title, bullets, concept) + the target accent + which
 layout(s). Claude fills the matching builder in `slidestyle.layouts` (Route A) or
 `slidestyle.svg` (Route B), then you polish the `.pptx` by hand.
+
+## Personal assets — photo & tool icons
+Cached under `assets/` from two sources: the jsonresume registry
+(`registry.jsonresume.org/LeaYeh`, photo + CV skills) and the private lyeh-infra JD
+tracker (target-role tech). Refresh after either changes: `python -m slidestyle.assets`
+(JD tools only appear when the lyeh-infra repo is present locally). All reads are
+offline via `slidestyle.assets`.
+
+- **Profile photo** — `assets.photo_path()`. On a slide: `assets.add_photo(slide, left, top, width)`
+  (Inches). Good for Cover, Closing/contact, and "about me" slides.
+- **Tool icons** — official-color brand logos (Devicon multi-color where available,
+  Simple Icons official-color otherwise). `assets.icons()` lists `{name: svg path}`;
+  `assets.manifest()["icons"]` is the source of truth. Currently available:
+  Apache Airflow, Apache Flink, Apache Kafka, Apache NiFi, Apache Spark, Argo CD, AWS,
+  Azure, BigQuery, C++, Claude, Databricks, Django, Docker, Dynatrace, Elasticsearch,
+  Git, GitHub Actions, Go, Google Cloud, Grafana, Helm, Kibana, Kubernetes, LangChain,
+  Linux, Logstash, MLflow, MQTT, MySQL, Neo4j, NumPy, ONNX, OpenTelemetry, Palantir,
+  Pandas, Plotly, Prometheus, PyTorch, Python, React, Rust, Scala, SciPy, Splunk,
+  Streamlit, TensorFlow, Terraform, TypeScript, Vagrant, pytest.
+
+**Use icons in architecture diagrams** to label nodes with the real tech:
+- Route B (SVG): drop `assets.icon_image(name, x, y, size)` into any node — it returns a
+  self-contained `<image>` (data-URI) that rasterizes cleanly through cairosvg. Root
+  `<svg>` must declare `xmlns:xlink`. Convention: icon top-left or centered above the
+  label, ~40–56px square, one icon per node — the logo carries recognition, the brand
+  accent stroke carries hierarchy. Don't recolor logos; keep node fills light so they read.
+- Route A (native pptx): `assets.add_icon(slide, name, left, top, size)` rasterizes the
+  logo to a crisp PNG and places it (needs the `[svg]` extra).
 """
 
 def write(path="dist/style-guide.md"):
