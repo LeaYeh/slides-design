@@ -1,2 +1,5 @@
 .superpowers/
 RESUME.md
+.venv/
+__pycache__/
+*.pyc
